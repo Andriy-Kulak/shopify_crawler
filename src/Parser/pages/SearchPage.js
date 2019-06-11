@@ -30,8 +30,17 @@ class SearchPage {
       const nodes = document.querySelectorAll('#SearchResultsListings .grid__item');
       const result = [];
       nodes.forEach((container) => {
+        const fullUrl = container.querySelector('a').getAttribute('href');
+        const pos = fullUrl.indexOf('?');
+        let Url;
+        if (pos !== -1) {
+          Url = fullUrl.substr(0, pos);
+        } else {
+          Url = fullUrl;
+        }
         const reviewsNumber = container.querySelector('.ui-review-count-summary').firstChild.nodeValue.trim();
         result.push({
+          Url,
           Name: container.querySelector('h4').textContent.trim(),
           MinorDescription: container.querySelector('p').textContent.trim(),
           ReviewRating: Number(container.querySelector('.ui-star-rating__rating').firstChild.nodeValue.trim()),

@@ -1,7 +1,8 @@
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
   const productSchema = new Schema({
-    Name: { type: String, index: true },
+    Url: { type: String, index: true },
+    Name: String,
     Category: String,
     Subcategory: String,
     MinorDescription: String,
