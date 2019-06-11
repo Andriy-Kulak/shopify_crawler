@@ -14,6 +14,7 @@ class Parser {
   constructor() {
     this.browser = null;
     this.product_page = null;
+    this.searchPage = new SearchPage();
   }
 
   async init() {
@@ -40,7 +41,7 @@ class Parser {
 
   async getProducts() {
     const page = await this.getNextProductsPage();
-    return SearchPage.parse(page);
+    return this.searchPage.Parse(page);
   }
 }
 
