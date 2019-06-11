@@ -1,0 +1,41 @@
+{
+  "log4js": {
+	"appenders": {
+	  "console": {
+		"type": "stdout"
+	  },
+	  "logfile": {
+		"type": "dateFile",
+		"filename": "logs/bot.log",
+		"compress": true
+	  }
+	},
+	"categories": {
+	  "default": {
+		"appenders": [
+		  "console",
+		  "logfile"
+		],
+		"level": "debug"
+	  }
+	}
+  },
+  "mongoose": {
+	"uri": "mongodb://localhost:27017/dev_shopify_crawler",
+	"options": {
+	  "useNewUrlParser": true
+	}
+  },
+  "chrome": {
+	"args": [
+	  "--no-sandbox",
+	  "--disable-setuid-sandbox",
+	  "--disable-infobars",
+	  "--window-position=0,0",
+	  "--ignore-certifcate-errors",
+	  "--ignore-certifcate-errors-spki-list"
+	],
+	"headless": false,
+	"ignoreHTTPSErrors": true
+  }
+}

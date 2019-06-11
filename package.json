@@ -1,0 +1,29 @@
+{
+  "name": "shopify_crawler",
+  "version": "1.0.0",
+  "description": "Shopify crawler",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://TrueHollow@bitbucket.org/TrueHollow/shopify_crawler.git"
+  },
+  "author": "Russkih Anatoly",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/TrueHollow/shopify_crawler#readme",
+  "dependencies": {
+    "config": "^3.1.0",
+    "log4js": "^4.3.1",
+    "mongoose": "^5.5.14",
+    "puppeteer": "^1.17.0",
+    "puppeteer-extra": "^2.1.3",
+    "puppeteer-extra-plugin-stealth": "^2.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3"
+  }
+}
