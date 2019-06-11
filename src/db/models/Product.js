@@ -7,7 +7,7 @@ module.exports = (mongoose) => {
     MinorDescription: String,
     NumberOfReviews: Number,
     ReviewRating: Number,
-    DateStartedTracking: Date,
+    DateStartedTracking: { type: Date, default: Date.now },
   });
 
   mongoose.model('Product', productSchema);

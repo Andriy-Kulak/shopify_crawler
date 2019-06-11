@@ -25,8 +25,32 @@ class SearchPage {
     }
   }
 
+  async getProductsOnPage(page) {
+    return page.evaluate(() => {
+      const nodes = document.querySelectorAll('#SearchResultsListings .grid__item');
+      const result = [];
+      nodes.forEach((container) => {
+        const reviewsNumber = container.querySelector('.ui-review-count-summary').firstChild.nodeValue.trim();
+        result.push({
+          Name: container.querySelector('h4').textContent.trim(),
+          MinorDescription: container.querySelector('p').textContent.trim(),
+          ReviewRating: Number(container.querySelector('.ui-star-rating__rating').firstChild.nodeValue.trim()),
+          NumberOfReviews: Number(reviewsNumber.split('').filter(Number).join('')),
+        });
+      });
+      return result;
+    });
+  }
+
   async Parse(page) {
     await this.checkCategories(page);
+    const products = await this.getProductsOnPage(page);
+    const source = {
+      Category: this.category,
+      Subcategory: this.subcategory,
+    };
+    const productsComplete = products.map(product => Object.assign(product, source));
+    return productsComplete;
   }
 }
 
