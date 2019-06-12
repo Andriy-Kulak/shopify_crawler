@@ -1,8 +1,9 @@
 const logger = require('../../common/Logger')('src/Parser/pages/SearchPage.js');
 /*
 const LONG_DELAY_API = 2000;
-const TYPE_DELAY = 50;
 */
+
+const TYPE_DELAY = 50;
 
 const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
 const URL = 'https://apps.shopify.com/browse';
@@ -73,10 +74,19 @@ class SearchPage {
   async checkCategories() {
     const { page } = this;
     const initialFlag = this.category === null;
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle2' }),
-      this.clickOnNextSubCat(initialFlag),
-    ]);
+    if (initialFlag === true || !(await this.isNextLinkOnPage())) {
+      logger.debug('Clicking on next subCategory.');
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        this.clickOnNextSubCat(initialFlag),
+      ]);
+    } else {
+      logger.debug('Found Next link, clicking on it.');
+      return Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.click(NEXT_PAGE_SELECTOR, { delay: TYPE_DELAY }),
+      ]);
+    }
     const result = await this.getCatAndSubCatOnPage();
     if (result) {
       this.setCatAndSubCat(result);
