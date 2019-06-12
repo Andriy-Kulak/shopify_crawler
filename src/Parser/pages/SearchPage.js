@@ -2,14 +2,30 @@ const logger = require('../../common/Logger')('src/Parser/pages/SearchPage.js');
 
 const TYPE_DELAY = 50;
 
+const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
+const URL = 'https://apps.shopify.com/browse';
+
 class SearchPage {
   constructor() {
     this.category = null;
     this.subcategory = null;
+    this.page = null;
   }
 
-  async checkCategories(page) {
+  havePage() {
+    return this.page !== null;
+  }
+
+  async setPage(page) {
+    logger.debug('Opening first page (%s)', URL);
+    await page.goto(URL, { waitUntil: 'networkidle2' });
+    this.page = page;
+  }
+
+  async checkCategories() {
+    const { page } = this;
     if (this.category === null) {
+      logger.debug('Setting first category');
       this.category = await page.evaluate(() => document.querySelector('#CategoriesFilter a').firstChild.nodeValue.trim());
       await Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
@@ -17,6 +33,7 @@ class SearchPage {
       ]);
     }
     if (this.subcategory === null) {
+      logger.debug('Setting first subcategory');
       this.subcategory = await page.evaluate(() => document.querySelector('#CategoriesFilter ul a').firstChild.nodeValue.trim());
       await Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
@@ -25,7 +42,9 @@ class SearchPage {
     }
   }
 
-  async getProductsOnPage(page) {
+  async getProductsOnPage() {
+    const { page } = this;
+    logger.debug('Getting products on page');
     return page.evaluate(() => {
       const nodes = document.querySelectorAll('#SearchResultsListings .grid__item');
       const result = [];
@@ -57,14 +76,63 @@ class SearchPage {
     });
   }
 
-  async Parse(page) {
-    await this.checkCategories(page);
-    const products = await this.getProductsOnPage(page);
+  async isNextLinkOnPage() {
+    const { page } = this;
+    return page.evaluate(selector => !document.querySelector(selector)
+      .classList
+      .contains('disabled'), NEXT_PAGE_SELECTOR);
+  }
+
+  async clickOnNextSubCategory() {
+    const { page } = this;
+    return page.evaluate(() => {
+      let shouldClick = false;
+      let result = null;
+      const links = document.querySelectorAll('.search-filter-group__item-name');
+      for (const link of links) {
+        if (link.getAttribute('aria-current').toLowerCase() === 'true') {
+          shouldClick = true;
+        } else if (shouldClick) {
+          const subcategory = link.firstChild.nodeValue.trim();
+          result = { subcategory };
+          link.click();
+          break;
+        }
+      }
+      return result;
+    });
+  }
+
+  async goToNextSearchResult() {
+    const { page } = this;
+    logger.debug('go to next search result');
+    if (await this.isNextLinkOnPage()) {
+      logger.debug('Found Next link, clicking on it.');
+      return Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.click(NEXT_PAGE_SELECTOR, { delay: TYPE_DELAY }),
+      ]);
+    }
+    const promise = page.waitForNavigation({ waitUntil: 'networkidle2' });
+    const nextCat = await this.clickOnNextSubCategory();
+    if (nextCat) {
+      this.subcategory = nextCat.subcategory;
+    } else {
+      await page.goto('')
+    }
+    return promise;
+  }
+
+  async Parse() {
+    logger.debug('Parsing');
+    await this.checkCategories();
+    const products = await this.getProductsOnPage();
     const source = {
       Category: this.category,
       Subcategory: this.subcategory,
     };
     const productsComplete = products.map(product => Object.assign(product, source));
+    await this.goToNextSearchResult();
     return productsComplete;
   }
 }

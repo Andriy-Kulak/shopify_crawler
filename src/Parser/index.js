@@ -4,8 +4,6 @@ const pluginStealth = require('puppeteer-extra-plugin-stealth');
 const config = require('config');
 const logger = require('../common/Logger')('src/Parser/index.js');
 
-const URL = 'https://apps.shopify.com/browse';
-
 puppeteer.use(pluginStealth());
 
 const SearchPage = require('./pages/SearchPage');
@@ -16,7 +14,6 @@ const PAGES_PER_ITERATION = 5;
 class Parser {
   constructor() {
     this.browser = null;
-    this.product_page = null;
     this.searchPage = new SearchPage();
   }
 
@@ -37,16 +34,6 @@ class Parser {
     return page;
   }
 
-  async getNextProductsPage() {
-    if (!this.product_page) {
-      const page = await this.getNewPage();
-      logger.debug('Opening first page (%s)', URL);
-      await page.goto(URL, { waitUntil: 'networkidle2' });
-      this.product_page = page;
-    }
-    return this.product_page;
-  }
-
   async getStarsForProduct(products) {
     let result = [];
     do {
@@ -65,8 +52,13 @@ class Parser {
   }
 
   async getProducts() {
-    const page = await this.getNextProductsPage();
-    const products = await this.searchPage.Parse(page);
+    const { searchPage } = this;
+    if (!searchPage.havePage()) {
+      const page = await this.getNewPage();
+      await searchPage.setPage(page);
+    }
+
+    const products = await searchPage.Parse();
     return this.getStarsForProduct(products);
   }
 }
