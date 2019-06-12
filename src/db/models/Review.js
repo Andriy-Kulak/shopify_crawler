@@ -4,7 +4,7 @@ module.exports = (mongoose) => {
     Rating: String,
     Description: String,
     ReviewDate: Date,
-    ProductId: { type: Schema.Types.ObjectId, ref: 'Product' },
+    ProductId: { type: Schema.Types.ObjectId, ref: 'ProductPage' },
   });
 
   mongoose.model('Review', reviewSchema);

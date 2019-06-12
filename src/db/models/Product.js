@@ -9,7 +9,13 @@ module.exports = (mongoose) => {
     NumberOfReviews: Number,
     ReviewRating: Number,
     DateStartedTracking: { type: Date, default: Date.now },
+    Slug: String,
+    star1: Number,
+    star2: Number,
+    star3: Number,
+    star4: Number,
+    star5: Number,
   });
 
-  mongoose.model('Product', productSchema);
+  mongoose.model('ProductPage', productSchema);
 };

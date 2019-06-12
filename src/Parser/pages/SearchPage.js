@@ -38,13 +38,19 @@ class SearchPage {
         } else {
           Url = fullUrl;
         }
+        const Slug = Url.substring(Url.lastIndexOf('/') + 1);
         const reviewsNumber = container.querySelector('.ui-review-count-summary').firstChild.nodeValue.trim();
+        const Name = container.querySelector('h4').textContent.trim();
+        const MinorDescription = container.querySelector('p').textContent.trim();
+        const ReviewRating = Number(container.querySelector('.ui-star-rating__rating').firstChild.nodeValue.trim());
+        const NumberOfReviews = Number(reviewsNumber.split('').filter(c => Number.isInteger(Number(c))).join(''));
         result.push({
           Url,
-          Name: container.querySelector('h4').textContent.trim(),
-          MinorDescription: container.querySelector('p').textContent.trim(),
-          ReviewRating: Number(container.querySelector('.ui-star-rating__rating').firstChild.nodeValue.trim()),
-          NumberOfReviews: Number(reviewsNumber.split('').filter(Number).join('')),
+          Name,
+          MinorDescription,
+          ReviewRating,
+          NumberOfReviews,
+          Slug,
         });
       });
       return result;

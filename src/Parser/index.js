@@ -9,6 +9,9 @@ const URL = 'https://apps.shopify.com/browse';
 puppeteer.use(pluginStealth());
 
 const SearchPage = require('./pages/SearchPage');
+const ProductPage = require('./pages/ProductPage');
+
+const PAGES_PER_ITERATION = 5;
 
 class Parser {
   constructor() {
@@ -28,10 +31,15 @@ class Parser {
     }
   }
 
+  async getNewPage() {
+    const page = await this.browser.newPage();
+    await page.setViewport({ width: 1920, height: 1040 });
+    return page;
+  }
+
   async getNextProductsPage() {
     if (!this.product_page) {
-      const page = await this.browser.newPage();
-      await page.setViewport({ width: 1920, height: 1040 });
+      const page = await this.getNewPage();
       logger.debug('Opening first page (%s)', URL);
       await page.goto(URL, { waitUntil: 'networkidle2' });
       this.product_page = page;
@@ -39,9 +47,27 @@ class Parser {
     return this.product_page;
   }
 
+  async getStarsForProduct(products) {
+    let result = [];
+    do {
+      const productsIteration = products.splice(0, PAGES_PER_ITERATION);
+      // eslint-disable-next-line no-await-in-loop
+      const productsWithStars = await Promise.all(productsIteration.map(async (product) => {
+        const productPage = new ProductPage(product);
+        const page = await this.getNewPage();
+        const productResult = await productPage.Parse(page);
+        await page.close();
+        return productResult;
+      }));
+      result = result.concat(productsWithStars);
+    } while (products.length);
+    return result;
+  }
+
   async getProducts() {
     const page = await this.getNextProductsPage();
-    return this.searchPage.Parse(page);
+    const products = await this.searchPage.Parse(page);
+    return this.getStarsForProduct(products);
   }
 }
 

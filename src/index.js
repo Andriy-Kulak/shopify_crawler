@@ -10,7 +10,7 @@ const main = async () => {
   try {
     parser = new Parser();
 
-    const Product = mongoose.model('Product');
+    const Product = mongoose.model('ProductPage');
 
     await parser.init();
     const products = await parser.getProducts();
