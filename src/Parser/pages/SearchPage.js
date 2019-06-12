@@ -3,7 +3,8 @@ const logger = require('../../common/Logger')('src/Parser/pages/SearchPage.js');
 const TYPE_DELAY = 50;
 
 const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
-const URL = 'https://apps.shopify.com/browse';
+// const URL = 'https://apps.shopify.com/browse';
+const URL = 'https://apps.shopify.com/browse/store-design-popups-and-notifications?page=9&pricing=all&requirements=off&sort_by=popular';
 
 class SearchPage {
   constructor() {
@@ -48,6 +49,18 @@ class SearchPage {
     return page.evaluate(() => {
       const nodes = document.querySelectorAll('#SearchResultsListings .grid__item');
       const result = [];
+
+      const getValue = (container, selector) => {
+        const el = container.querySelector(selector);
+        if (el) {
+          const { firstChild } = el;
+          if (firstChild) {
+            return firstChild.nodeValue.trim();
+          }
+        }
+        return null;
+      };
+
       nodes.forEach((container) => {
         const fullUrl = container.querySelector('a').getAttribute('href');
         const pos = fullUrl.indexOf('?');
@@ -58,10 +71,13 @@ class SearchPage {
           Url = fullUrl;
         }
         const Slug = Url.substring(Url.lastIndexOf('/') + 1);
-        const reviewsNumber = container.querySelector('.ui-review-count-summary').firstChild.nodeValue.trim();
         const Name = container.querySelector('h4').textContent.trim();
         const MinorDescription = container.querySelector('p').textContent.trim();
-        const ReviewRating = Number(container.querySelector('.ui-star-rating__rating').firstChild.nodeValue.trim());
+
+        const reviewRating = getValue(container, '.ui-star-rating__rating');
+        const ReviewRating = Number(reviewRating);
+
+        const reviewsNumber = getValue(container, '.ui-review-count-summary');
         const NumberOfReviews = Number(reviewsNumber.split('').filter(c => Number.isInteger(Number(c))).join(''));
         result.push({
           Url,
@@ -118,13 +134,14 @@ class SearchPage {
     if (nextCat) {
       this.subcategory = nextCat.subcategory;
     } else {
-      await page.goto('')
+      await page.goto('about:blank', { waitUntil: 'networkidle2' });
     }
     return promise;
   }
 
   async Parse() {
-    logger.debug('Parsing');
+    const url = await this.page.url();
+    logger.debug('Parsing %s', url);
     await this.checkCategories();
     const products = await this.getProductsOnPage();
     const source = {

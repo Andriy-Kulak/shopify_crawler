@@ -1,3 +1,5 @@
+const logger = require('../../common/Logger')('src/Parser/pages/ProductPage.js');
+
 class ProductPage {
   constructor(product) {
     this.product = product;
@@ -6,6 +8,7 @@ class ProductPage {
   async Parse(page) {
     const { product } = this;
     const { Url } = product;
+    logger.debug('Parsing %s', Url);
     await page.goto(Url, { waitUntil: 'networkidle2' });
     const starsData = await page.evaluate(() => {
       const reviewsCount = document.querySelectorAll('.reviews-summary__review-count');
