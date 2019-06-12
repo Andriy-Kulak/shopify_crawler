@@ -153,9 +153,9 @@ class SearchPage {
   }
 
   async Parse() {
+    await this.checkCategories();
     const url = await this.page.url();
     logger.debug('Parsing %s', url);
-    await this.checkCategories();
     const products = await this.getProductsOnPage();
     logger.debug('Found %d products', products.length);
     const source = {
