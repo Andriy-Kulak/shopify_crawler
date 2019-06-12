@@ -7,7 +7,9 @@ const TYPE_DELAY = 50;
 
 const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
 const URL = 'https://apps.shopify.com/browse';
-// const URL = 'https://apps.shopify.com/browse/store-design-popups-and-notifications?page=9&pricing=all&requirements=off&sort_by=popular';
+// const URL = 'https://apps.shopify.com/browse/store-design-popups-and-notifications?page=9&pricing=all&requirements=off&sort_by=popular'; // Go to next SubCategory
+// const URL = 'https://apps.shopify.com/browse/store-design-other?page=9&pricing=all&requirements=off&sort_by=popular'; // Got to next SubCategory in another Category
+// const URL = 'https://apps.shopify.com/browse/places-to-sell-other?pricing=all&requirements=off&sort_by=popular';
 
 class SearchPage {
   constructor() {
@@ -31,7 +33,7 @@ class SearchPage {
     return page.evaluate((flag) => {
       let isFount = flag;
       let clicked = false;
-      const links = document.querySelectorAll('.search-filter-group__item-name');
+      const links = document.querySelectorAll('#CategoriesFilter .search-filter-group__item-name');
       for (const link of links) {
         if (link.getAttribute('aria-current').toLowerCase() === 'true') {
           isFount = true;
@@ -51,7 +53,7 @@ class SearchPage {
     const { page } = this;
     return page.evaluate(() => {
       let result = null;
-      const links = document.querySelectorAll('.search-filter-group__item-name');
+      const links = document.querySelectorAll('#CategoriesFilter .search-filter-group__item-name');
       for (const link of links) {
         if (link.getAttribute('aria-current').toLowerCase() === 'true') {
           const subcategory = link.firstChild.nodeValue.trim();
@@ -74,14 +76,14 @@ class SearchPage {
   async checkCategories() {
     const { page } = this;
     const initialFlag = this.category === null;
-    if (initialFlag === true || !(await this.isNextLinkOnPage())) {
+    if (initialFlag === true || (await this.noNextLinkOnPage())) {
       logger.debug('Clicking on next subCategory.');
       await Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
         this.clickOnNextSubCat(initialFlag),
       ]);
     } else {
-      logger.debug('Found Next link, clicking on it.');
+      logger.debug('Clicking on next link.');
       return Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
         page.click(NEXT_PAGE_SELECTOR, { delay: TYPE_DELAY }),
@@ -145,11 +147,21 @@ class SearchPage {
     });
   }
 
-  async isNextLinkOnPage() {
+  async noNextLinkOnPage() {
     const { page } = this;
-    return page.evaluate(selector => !document.querySelector(selector)
-      .classList
-      .contains('disabled'), NEXT_PAGE_SELECTOR);
+    const noNextLink = await page.evaluate((selector) => {
+      const nextLink = document.querySelector(selector);
+      if (!nextLink) {
+        return true;
+      }
+      return nextLink.classList.contains('disabled');
+    }, NEXT_PAGE_SELECTOR);
+    if (noNextLink) {
+      logger.debug('Next link not found.');
+    } else {
+      logger.debug('Next link found.');
+    }
+    return noNextLink;
   }
 
   async Parse() {
