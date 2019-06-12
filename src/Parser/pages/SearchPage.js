@@ -9,7 +9,8 @@ const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
 const URL = 'https://apps.shopify.com/browse';
 // const URL = 'https://apps.shopify.com/browse/store-design-popups-and-notifications?page=9&pricing=all&requirements=off&sort_by=popular'; // Go to next SubCategory
 // const URL = 'https://apps.shopify.com/browse/store-design-other?page=9&pricing=all&requirements=off&sort_by=popular'; // Got to next SubCategory in another Category
-// const URL = 'https://apps.shopify.com/browse/places-to-sell-other?pricing=all&requirements=off&sort_by=popular';
+// const URL = 'https://apps.shopify.com/browse/places-to-sell-other?pricing=all&requirements=off&sort_by=popular'; // Last SubCategory
+// const URL = 'https://apps.shopify.com/browse/store-design-badges?page=2&pricing=all&requirements=off&sort_by=popular'; // Next subCategory do not have Next Link
 
 class SearchPage {
   constructor() {
