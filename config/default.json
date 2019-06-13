@@ -35,7 +35,7 @@
 	  "--ignore-certifcate-errors",
 	  "--ignore-certifcate-errors-spki-list"
 	],
-	"headless": false,
+	"headless": true,
 	"ignoreHTTPSErrors": true
   }
 }

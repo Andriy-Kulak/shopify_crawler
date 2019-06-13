@@ -10,7 +10,7 @@ module.exports = (mongoose) => {
     ProductId: { type: Schema.Types.ObjectId, ref: 'ProductPage' },
   });
 
-  const collectionName = `reviewScrapred${dateFormat(new Date(), 'yyyymmdd')}`;
+  const collectionName = `reviewsScrapred${dateFormat(new Date(), 'yyyymmdd')}`;
   logger.debug(collectionName);
 
   return mongoose.model(collectionName, reviewSchema);
