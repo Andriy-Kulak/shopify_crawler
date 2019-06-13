@@ -1,5 +1,5 @@
 const Parser = require('./Parser');
-const mongoose = require('./db');
+const db = require('./db');
 const logger = require('./common/Logger')('index.js');
 
 logger.info('Script started...');
@@ -9,7 +9,7 @@ const parsingProducts = async () => {
   let parser;
   try {
     parser = new Parser();
-    const Product = mongoose.model('ProductPage');
+    const { Product } = db;
 
     await parser.init();
     let products;
@@ -31,6 +31,7 @@ const parsingProducts = async () => {
 };
 
 const main = async () => {
+  const { mongoose } = db;
   logger.info('Main invoked');
   await parsingProducts();
   mongoose.disconnect();

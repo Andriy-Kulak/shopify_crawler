@@ -15,6 +15,7 @@
   "homepage": "https://bitbucket.org/TrueHollow/shopify_crawler#readme",
   "dependencies": {
     "config": "^3.1.0",
+    "dateformat": "^3.0.3",
     "log4js": "^4.3.1",
     "mongoose": "^5.5.14",
     "puppeteer": "^1.17.0",

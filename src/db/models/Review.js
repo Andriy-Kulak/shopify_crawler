@@ -1,3 +1,6 @@
+const dateFormat = require('dateformat');
+const logger = require('../../common/Logger')('src/db/models/Review.js');
+
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
   const reviewSchema = new Schema({
@@ -7,5 +10,8 @@ module.exports = (mongoose) => {
     ProductId: { type: Schema.Types.ObjectId, ref: 'ProductPage' },
   });
 
-  mongoose.model('Review', reviewSchema);
+  const collectionName = `reviewScrapred${dateFormat(new Date(), 'yyyymmdd')}`;
+  logger.debug(collectionName);
+
+  return mongoose.model(collectionName, reviewSchema);
 };

@@ -1,3 +1,6 @@
+const dateFormat = require('dateformat');
+const logger = require('../../common/Logger')('src/db/models/Product.js');
+
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
   const productSchema = new Schema({
@@ -8,7 +11,7 @@ module.exports = (mongoose) => {
     MinorDescription: String,
     NumberOfReviews: Number,
     ReviewRating: Number,
-    DateStartedTracking: { type: Date, default: Date.now },
+    DateTracked: { type: Date, default: Date.now },
     Slug: String,
     star1: Number,
     star2: Number,
@@ -17,5 +20,8 @@ module.exports = (mongoose) => {
     star5: Number,
   });
 
-  mongoose.model('ProductPage', productSchema);
+  const collectionName = `productsScrapred${dateFormat(new Date(), 'yyyymmdd')}`;
+  logger.debug(collectionName);
+
+  return mongoose.model(collectionName, productSchema);
 };

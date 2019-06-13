@@ -13,7 +13,11 @@ db.once('open', () => {
   logger.info('Connected to mongo.');
 });
 
-require('./models/Product')(mongoose);
-require('./models/Review')(mongoose);
+const Product = require('./models/Product')(mongoose);
+const Reviewrequire = require('./models/Review')(mongoose);
 
-module.exports = mongoose;
+module.exports = {
+  mongoose,
+  Product,
+  Reviewrequire,
+};
