@@ -4,6 +4,7 @@ const LONG_DELAY_API = 2000;
 */
 
 const TYPE_DELAY = 50;
+const TIMEOUT = 0;
 
 const NEXT_PAGE_SELECTOR = '.search-pagination__next-page-text';
 const URL = 'https://apps.shopify.com/browse';
@@ -25,6 +26,7 @@ class SearchPage {
 
   async setPage(page) {
     logger.debug('Opening first page (%s)', URL);
+    page.setDefaultTimeout(TIMEOUT);
     await page.goto(URL, { waitUntil: 'networkidle2' });
     this.page = page;
   }

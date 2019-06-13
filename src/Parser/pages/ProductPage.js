@@ -1,5 +1,7 @@
 const logger = require('../../common/Logger')('src/Parser/pages/ProductPage.js');
 
+const TIMEOUT = 0;
+
 class ProductPage {
   constructor(product) {
     this.product = product;
@@ -9,6 +11,7 @@ class ProductPage {
     const { product } = this;
     const { Url } = product;
     logger.debug('Parsing %s', Url);
+    page.setDefaultTimeout(TIMEOUT);
     await page.goto(Url, { waitUntil: 'networkidle2' });
     const starsData = await page.evaluate(() => {
       const reviewsCount = document.querySelectorAll('.reviews-summary__review-count');
