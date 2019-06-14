@@ -12,6 +12,7 @@ const ProductPage = require('./pages/ProductPage');
 const ReviewPage = require('./pages/ReviewPage');
 
 const PAGES_PER_ITERATION = 5;
+const PRODUCTS_REVIEW = 5;
 
 class Parser {
   constructor() {
@@ -79,7 +80,7 @@ class Parser {
     }
     const { Review } = db;
     do {
-      const productsIteration = filteredProducts.splice(0, PAGES_PER_ITERATION);
+      const productsIteration = filteredProducts.splice(0, PRODUCTS_REVIEW);
       // eslint-disable-next-line no-await-in-loop
       await Promise.all(productsIteration
         .map(async (product) => {
