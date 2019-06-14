@@ -1,6 +1,35 @@
+const program = require('commander');
+const logger = require('./common/Logger')('index.js');
+
+const parseBoolean = (value, prevValue) => {
+  const lowCasedValue = value.toLowerCase();
+  switch (lowCasedValue) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      logger.warn(`Invalid argument ${lowCasedValue}`);
+      return prevValue;
+  }
+};
+
+const REVIEWS_LIMIT = 1000;
+
+const parseIntArg = (value, prev) => {
+  const result = parseInt(value, 10);
+  return Number.isInteger(result) ? result : prev;
+};
+
+program
+  .option('-p, --products <value>', 'Should script parse products? (default: true)', parseBoolean, true)
+  .option('-r, --reviews <value>', 'Should script parse reviews? (default: true)', parseBoolean, true)
+  .option('-l, --limit <number>', `Reviews parsing limit ${REVIEWS_LIMIT}`, parseIntArg, REVIEWS_LIMIT);
+
+program.parse(process.argv);
+
 const Parser = require('./Parser');
 const db = require('./db');
-const logger = require('./common/Logger')('index.js');
 
 logger.info('Script started...');
 
@@ -30,10 +59,19 @@ const parsingProducts = async () => {
   }
 };
 
+const parsingReviews = async () => {
+
+};
+
 const main = async () => {
   const { mongoose } = db;
   logger.info('Main invoked');
-  await parsingProducts();
+  if (program.products) {
+    await parsingProducts();
+  }
+  if (program.reviews) {
+    await parsingReviews();
+  }
   mongoose.disconnect();
 };
 
