@@ -14,10 +14,10 @@ db.once('open', () => {
 });
 
 const Product = require('./models/Product')(mongoose);
-const Reviewrequire = require('./models/Review')(mongoose);
+const Review = require('./models/Review')(mongoose);
 
 module.exports = {
   mongoose,
   Product,
-  Reviewrequire,
+  Review,
 };

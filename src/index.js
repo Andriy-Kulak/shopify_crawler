@@ -51,7 +51,7 @@ const parsingProducts = async () => {
       }
     } while (products.length);
   } catch (e) {
-    logger.error('Error in main:', e);
+    logger.error('Error in parsingProducts:', e);
   } finally {
     if (parser) {
       await parser.clean();
@@ -60,7 +60,20 @@ const parsingProducts = async () => {
 };
 
 const parsingReviews = async () => {
-
+  logger.info('Parsing reviews');
+  let parser;
+  try {
+    const { Product } = db;
+    const allProducts = await Product.find();
+    parser = new Parser();
+    await parser.getReviews(allProducts, program.limit);
+  } catch (e) {
+    logger.error('Error in parsingReviews:', e);
+  } finally {
+    if (parser) {
+      await parser.clean();
+    }
+  }
 };
 
 const main = async () => {
