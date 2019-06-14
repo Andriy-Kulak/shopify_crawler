@@ -107,7 +107,7 @@ class ReviewPage {
       let ReviewDate = null;
       const ProductId = id;
 
-      $('.review-metadata__item-value', tag).each((i, t) => {
+      $('.review-metadata__item-value', tag).each((iN, t) => {
         if (t.children.length === 1 && t.children[0].type === 'text') {
           ReviewDate = parseDate(t.children[0].data.trim());
         } else {
