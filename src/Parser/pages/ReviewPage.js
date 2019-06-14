@@ -102,7 +102,7 @@ class ReviewPage {
     reviewCollection.each((i, tag) => {
       const Id = findId(tag);
       const Header = $('h3', tag).text().trim();
-      const Description = $('.review-content', tag).text().trim();
+      const Description = $('p', tag).text().trim();
       let Rating = null;
       let ReviewDate = null;
       const ProductId = id;
