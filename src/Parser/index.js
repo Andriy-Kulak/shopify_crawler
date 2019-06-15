@@ -11,8 +11,8 @@ const SearchPage = require('./pages/SearchPage');
 const ProductPage = require('./pages/ProductPage');
 const ReviewPage = require('./pages/ReviewPage');
 
-const PAGES_PER_ITERATION = 5;
-const PRODUCTS_REVIEW = 5;
+const PAGES_PER_ITERATION = config.get('PAGES_PER_ITERATION');
+const PRODUCTS_REVIEW = config.get('PRODUCTS_REVIEW');
 
 class Parser {
   constructor() {

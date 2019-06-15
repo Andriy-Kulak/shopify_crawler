@@ -46,7 +46,9 @@ Create custom configuration file `custom_file.json` (for example) with
 	],
 	"headless": true,
 	"ignoreHTTPSErrors": true
-  }
+  },
+  "PAGES_PER_ITERATION": 8,
+  "PRODUCTS_REVIEW": 30
 }
 ```
 
