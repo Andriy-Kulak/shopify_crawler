@@ -23,7 +23,8 @@
   "mongoose": {
 	"uri": "mongodb://localhost:27017/dev_shopify_crawler",
 	"options": {
-	  "useNewUrlParser": true
+	  "useNewUrlParser": true,
+    "useCreateIndex": true
 	}
   },
   "chrome": {
