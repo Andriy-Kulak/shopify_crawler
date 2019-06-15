@@ -80,7 +80,11 @@ class ReviewPage {
         counter += reviewsOnPage.length;
         result = result.concat(reviewsOnPage);
         urlPostFix = ReviewPage.getNextUrl($);
-        Url = `https://apps.shopify.com${urlPostFix}`;
+        if (urlPostFix) {
+          Url = `https://apps.shopify.com${urlPostFix}`;
+        } else {
+          logger.debug(`Url (${Url}) is last.`);
+        }
       } catch (e) {
         logger.error(e);
       }
