@@ -59,6 +59,10 @@ class ReviewPage {
     this.limit = limit;
   }
 
+  static async LoadHtml(html) {
+    return new Promise(resolve => resolve(cheerio.load(html)));
+  }
+
   async parse() {
     const { product, limit } = this;
     let result = [];
@@ -70,7 +74,8 @@ class ReviewPage {
       try {
         // eslint-disable-next-line no-await-in-loop
         const html = await Http.Get(Url);
-        const $ = cheerio.load(html);
+        // eslint-disable-next-line no-await-in-loop
+        const $ = await ReviewPage.LoadHtml(html);
         const reviewsOnPage = ReviewPage.getReviews($, _id);
         counter += reviewsOnPage.length;
         result = result.concat(reviewsOnPage);
