@@ -22,9 +22,9 @@ const parseIntArg = (value, prev) => {
 };
 
 program
-  .option('-p, --products <value>', 'Should script parse products? (default: true)', parseBoolean, true)
-  .option('-r, --reviews <value>', 'Should script parse reviews? (default: true)', parseBoolean, true)
-  .option('-l, --limit <number>', `Reviews parsing limit ${REVIEWS_LIMIT}`, parseIntArg, REVIEWS_LIMIT);
+  .option('-p, --products <value>', 'Should script parse products?', parseBoolean, true)
+  .option('-r, --reviews <value>', 'Should script parse reviews?', parseBoolean, true)
+  .option('-l, --limit <number>', 'Reviews parsing limit', parseIntArg, REVIEWS_LIMIT);
 
 program.parse(process.argv);
 
