@@ -32,7 +32,8 @@ Create custom configuration file `custom_file.json` (for example) with
   "mongoose": {
 	"uri": "mongodb://localhost:27017/dev_shopify_crawler",
 	"options": {
-	  "useNewUrlParser": true
+	  "useNewUrlParser": true,
+    "useCreateIndex": true
 	}
   },
   "chrome": {
@@ -46,7 +47,9 @@ Create custom configuration file `custom_file.json` (for example) with
 	],
 	"headless": true,
 	"ignoreHTTPSErrors": true
-  }
+  },
+  "PAGES_PER_ITERATION": 8,
+  "PRODUCTS_REVIEW": 50
 }
 ```
 

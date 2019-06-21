@@ -59,6 +59,10 @@ class ReviewPage {
     this.limit = limit;
   }
 
+  static async LoadHtml(html) {
+    return new Promise(resolve => resolve(cheerio.load(html)));
+  }
+
   async parse() {
     const { product, limit } = this;
     let result = [];
@@ -70,12 +74,17 @@ class ReviewPage {
       try {
         // eslint-disable-next-line no-await-in-loop
         const html = await Http.Get(Url);
-        const $ = cheerio.load(html);
+        // eslint-disable-next-line no-await-in-loop
+        const $ = await ReviewPage.LoadHtml(html);
         const reviewsOnPage = ReviewPage.getReviews($, _id);
         counter += reviewsOnPage.length;
         result = result.concat(reviewsOnPage);
         urlPostFix = ReviewPage.getNextUrl($);
-        Url = `https://apps.shopify.com${urlPostFix}`;
+        if (urlPostFix) {
+          Url = `https://apps.shopify.com${urlPostFix}`;
+        } else {
+          logger.debug(`Url (${Url}) is last.`);
+        }
       } catch (e) {
         logger.error(e);
       }
