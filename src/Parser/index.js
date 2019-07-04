@@ -2,14 +2,17 @@ const puppeteer = require('puppeteer-extra');
 const pluginStealth = require('puppeteer-extra-plugin-stealth');
 
 const config = require('config');
+const db = require('../db');
 const logger = require('../common/Logger')('src/Parser/index.js');
 
 puppeteer.use(pluginStealth());
 
 const SearchPage = require('./pages/SearchPage');
 const ProductPage = require('./pages/ProductPage');
+const ReviewPage = require('./pages/ReviewPage');
 
-const PAGES_PER_ITERATION = 5;
+const PAGES_PER_ITERATION = config.get('PAGES_PER_ITERATION');
+const PRODUCTS_REVIEW = config.get('PRODUCTS_REVIEW');
 
 class Parser {
   constructor() {
@@ -60,6 +63,32 @@ class Parser {
 
     const products = await searchPage.Parse();
     return this.getStarsForProduct(products);
+  }
+
+  async getReviews(allProducts, limit) {
+    const filteredProducts = allProducts
+      .filter((product) => {
+        const { NumberOfReviews } = product;
+        if (NumberOfReviews === 0) {
+          const { Name, Slug } = product;
+          logger.debug(`Skipping "${Name}" (${Slug}) - has zero numbers of review`);
+        }
+        return NumberOfReviews;
+      });
+    if (allProducts.length !== filteredProducts.length) {
+      logger.debug(`Total skipped (${allProducts.length - filteredProducts.length}) products.`);
+    }
+    const { Review } = db;
+    do {
+      const productsIteration = filteredProducts.splice(0, PRODUCTS_REVIEW);
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(productsIteration
+        .map(async (product) => {
+          const page = new ReviewPage(product, limit);
+          const reviews = await page.parse();
+          return Review.insertMany(reviews);
+        }));
+    } while (filteredProducts.length);
   }
 }
 

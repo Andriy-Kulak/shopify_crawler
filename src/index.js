@@ -1,6 +1,35 @@
+const program = require('commander');
+const logger = require('./common/Logger')('index.js');
+
+const parseBoolean = (value, prevValue) => {
+  const lowCasedValue = value.toLowerCase();
+  switch (lowCasedValue) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      logger.warn(`Invalid argument ${lowCasedValue}`);
+      return prevValue;
+  }
+};
+
+const REVIEWS_LIMIT = 1000;
+
+const parseIntArg = (value, prev) => {
+  const result = parseInt(value, 10);
+  return Number.isInteger(result) ? result : prev;
+};
+
+program
+  .option('-p, --products <value>', 'Should script parse products?', parseBoolean, true)
+  .option('-r, --reviews <value>', 'Should script parse reviews?', parseBoolean, true)
+  .option('-l, --limit <number>', 'Reviews parsing limit', parseIntArg, REVIEWS_LIMIT);
+
+program.parse(process.argv);
+
 const Parser = require('./Parser');
 const db = require('./db');
-const logger = require('./common/Logger')('index.js');
 
 logger.info('Script started...');
 
@@ -22,7 +51,24 @@ const parsingProducts = async () => {
       }
     } while (products.length);
   } catch (e) {
-    logger.error('Error in main:', e);
+    logger.error('Error in parsingProducts:', e);
+  } finally {
+    if (parser) {
+      await parser.clean();
+    }
+  }
+};
+
+const parsingReviews = async () => {
+  logger.info('Parsing reviews');
+  let parser;
+  try {
+    const { Product } = db;
+    const allProducts = await Product.find();
+    parser = new Parser();
+    await parser.getReviews(allProducts, program.limit);
+  } catch (e) {
+    logger.error('Error in parsingReviews:', e);
   } finally {
     if (parser) {
       await parser.clean();
@@ -33,7 +79,12 @@ const parsingProducts = async () => {
 const main = async () => {
   const { mongoose } = db;
   logger.info('Main invoked');
-  await parsingProducts();
+  if (program.products) {
+    await parsingProducts();
+  }
+  if (program.reviews) {
+    await parsingReviews();
+  }
   mongoose.disconnect();
 };
 
