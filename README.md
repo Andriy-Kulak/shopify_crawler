@@ -1,5 +1,16 @@
 ## Preparation
 
+### Install dependendcies
+- `yarn install`
+
+### To Start MongoDB
+- please ensure mongodb is installed locally.
+- To run mongodb, I am using the following command in MacOS: `mongod --dbpath=/Users/user/data/db`
+
+### To start scraper
+Command to do both products and reviews
+- `node src/index.js -p true`
+
 ### Create configuration file
 
 App now using [config package](https://www.npmjs.com/package/config) to manage configuration. 
@@ -59,10 +70,7 @@ Update environment variable `NODE_ENV` (for example):
 export NODE_ENV=custom_file
 ```
 
-### Install dependencies
 
-Run command `npm install`
 
-## Running app
-
-Run command `npm start`
+Command to do both products and reviews
+node src/index.js -p true
