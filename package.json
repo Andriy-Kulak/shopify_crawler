@@ -8,11 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://TrueHollow@bitbucket.org/TrueHollow/shopify_crawler.git"
   },
   "author": "Russkih Anatoly",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/TrueHollow/shopify_crawler#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "commander": "^2.20.0",
