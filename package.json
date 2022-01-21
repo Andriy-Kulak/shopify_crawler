@@ -16,7 +16,7 @@
     "commander": "^2.20.0",
     "config": "^3.1.0",
     "dateformat": "^3.0.3",
-    "log4js": "^4.3.1",
+    "log4js": "^6.4.0",
     "mongoose": "^5.5.14",
     "puppeteer": "^1.17.0",
     "puppeteer-extra": "^2.1.3",
